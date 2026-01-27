@@ -4,7 +4,7 @@ const app = require("./app");
 
 const server = http.createServer(app);
 
-const { initSocket } = require("../service/socket");
+const { initSocket } = require("./service/socket");
 initSocket(server);
 
 server.listen(PORT, () => {

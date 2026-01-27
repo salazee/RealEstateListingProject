@@ -40,3 +40,5 @@ connectDB();
 app.listen(PORT, ()=>{
     console.log(`Server running at ${PORT} `)
 });
+
+module.exports = app;

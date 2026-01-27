@@ -155,8 +155,12 @@ const ResendOtp = async (req, res) => {
 
 
 const forgotPassword = async (req, res) => {
+ try {
   const { email } = req.body;
 
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -171,15 +175,21 @@ const forgotPassword = async (req, res) => {
 
   await user.save();
 
-  const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
 
   await sendEmail.sendMail({
+    from: `"Property Market" <${process.env.EMAIL_USER}>`,
     to: user.email,
     subject: 'Reset your password',
-    text: `Click here to reset your password: ${resetUrl}`,
+    html: `<p>Click here to reset your password: ${resetUrl}</p>`,
   });
 
   res.json({ message: 'Password reset link sent' });
+ } catch (error) {
+  console.error('Forgot Password Error:', error);
+  res.status(500).json({ message: 'Email not sent' });
+ }
+
 };
 
 const resetPassword = async (req, res) => {

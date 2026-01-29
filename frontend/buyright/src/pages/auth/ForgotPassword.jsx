@@ -12,13 +12,13 @@ export default function ForgotPassword() {
   
     return (
       <>
-  <div className='min-h-screen bg-gray-200 mx-auto p-10 '>
-    <h3 className='flex justify-center items-center mb-4 text-3xl text-blue-700'>Forgot Your Password</h3>
-        <div className='flex flex-col'>
-  
+  <div className='min-h-screen bg-zinc-100 flex justify-center items-center  p-8 '>
+    
+        <div className='w-full max-w-md bg-blue-200 p-8 rounded shadow-md'>
+        <h3 className='flex justify-center items-center mb-4 text-3xl text-blue-700'>Forgot Your Password</h3>
         <input placeholder='Enter your email' value={email} onChange={e => setEmail(e.target.value)}
-        className='w-[60%] mx-auto mb-3 p-3' />
-        <button onClick={submit} className='w-[60%] mx-auto bg-blue-500 text-white py-2 rounded'>Send Reset Link</button>
+        className='w-full mx-auto mb-3 p-3' />
+        <button onClick={submit} className='w-full mx-auto bg-blue-500 text-white py-2 rounded'>Send Reset Link</button>
         </div>
         </div>
       </>

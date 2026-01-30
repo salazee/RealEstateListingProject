@@ -20,6 +20,7 @@ const inquirySchema = new mongoose.Schema(
     message: {
       type: String,
       required: true,
+      trim: true,
     },
     status: {
       type: String,
@@ -27,13 +28,23 @@ const inquirySchema = new mongoose.Schema(
       default: "pending",
     },
     response:{
-      type: String
+      type: String,
+      default: null,
+      trim: true,
+      maxLength: [2000, 'Response cannot exceed 2000 characters']
     } ,
     respondedAt:{
-      type: Date
+      type: Date,
+      default: null
     }
   },
   { timestamps: true }
 );
+
+// Indexes for better query performance
+inquirySchema.index({ buyer: 1, createdAt: -1 });
+inquirySchema.index({ seller: 1, createdAt: -1 });
+inquirySchema.index({ property: 1 });
+inquirySchema.index({ status: 1 });
 
 module.exports = mongoose.model("Inquiry", inquirySchema);

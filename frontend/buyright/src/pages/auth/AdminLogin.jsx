@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '../../lib/axios';
-import { ShieldCheckIcon } from '@heroicons/react/24/solid';
+import { Shield, Lock, Mail } from 'lucide-react';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -55,16 +55,16 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="bg-blue-600 p-3 rounded-full">
-              <ShieldCheckIcon className="w-12 h-12 text-white" />
+              <Shield className="w-12 h-12 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Admin Access</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Admin Portal</h2>
           <p className="mt-2 text-gray-600">Authorized personnel only</p>
         </div>
 
         {/* Login Card */}
         <div className="bg-white shadow-xl rounded-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className=" bg-green-200 rounded-lg p-6 border-slate-400space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Admin Email
@@ -75,9 +75,9 @@ export default function AdminLogin() {
                 type="email"
                 required
                 value={formData.email}
+                placeholder="admin@example.com"
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="admin@example.com"
               />
             </div>
 
@@ -106,7 +106,17 @@ export default function AdminLogin() {
                   : 'bg-blue-600 hover:bg-blue-700'
               } transition duration-200`}
             >
-              {loading ? 'Signing in...' : 'Sign In as Admin'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in as Admin..
+                </span>
+              ) : (
+                'Access Admin Portal'
+              )}
             </button>
           </form>
 

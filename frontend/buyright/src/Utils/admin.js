@@ -1,15 +1,4 @@
-// // src/utils/admin.js
-// import api from '../lib/axios';
 
-// export const getAllUsers = () => api.get('/api/getalluser'); 
-// export const deleteUser = (id) => api.delete(`/api/deleteusers/${id}`);
-// export const updateUser = (id,role) => api.put(`/api/updateuser/${id}`,{role})
-// export const getPendingListings = () => api.get('/property/pending'); // filter on frontend
-// export const approveListing = (id) => api.put(`/property/approveListing/${id}`, { id });
-// export const rejectListing = (id) => api.delete(`/property/rejectListing/${id}`, { data: { id } });
-// export const getAnalytics = () => api.get('/dashboard/analytics'); 
-
-// src/utils/admin.js
 import api from '../lib/axios';
 
 // === USER MANAGEMENT ===
@@ -32,6 +21,11 @@ export const getAllPayments = (params) => api.get('/payment/allpayment', { param
 // === ANALYTICS ===
 // This calls the backend analytics endpoint (recommended)
 export const getAnalytics = () => api.get('/dashboard/analytics'); // ✅ FIXED: Use existing endpoint
+export const ManageAdmins = () => api.get('/admin/alladmins');
+export const CreateAdmin = (data) => api.post('/admin/createadmin', data);
+export const DeleteAdmin = (id) => api.delete(`/admin/deleteadmin/${id}`);  
+export const PromoteAdmin = (id) => api.put(`/admin/promotetoadmin/${id}`);
+export const DemoteAdmin = (id) => api.put(`/admin/demoteadmin/${id}`);
 
 
 

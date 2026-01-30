@@ -29,7 +29,7 @@ export const rejectListing = (id) => api.delete('/property/rejectListing', { dat
 // === INQUIRIES ===
 export const createInquiry = (data) => api.post('/inquiry/createinquiry', data);
 export const respondToInquiry = (id, reply) => api.post(`/inquiry/response/${id}`, { reply });
-export const MyInquiries = () => api.get('/inquiry/my-inquiries');
+export const getBuyerInquiries = () => api.get('/inquiry/my-inquiries');
 export const getSellerInquiries = () => api.get('/inquiry/sellerinquiries');
 export const getInquiryById = (id) => api.get(`/inquiry/getInquiry/${id}`);
 export const getAllInquiries = () => api.get('/inquiry/allinquiries');

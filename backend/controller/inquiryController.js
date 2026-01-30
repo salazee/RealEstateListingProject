@@ -7,22 +7,46 @@ const createInquiry = async (req, res) => {
     if (!propertyId) {
       return res.status(400).json({ message: "Property ID is required" });
     }
+    if (!message || !message.trim()) {
+      return res.status(400).json({ message: "Message is required" });
+    }
 
     const property = await House.findById(propertyId);
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
     }
 
+    const buyerId = req.user._id || req.user.id;
+    const sellerId = property.owner._id || property.owner;
+    // Prevent buyers from inquiring about their own properties
+    if (buyerId.toString() === sellerId.toString()) {
+      return res.status(400).json({
+        message: "You cannot inquire about your own property"
+      });
+    }
+
+
     const inquiry = await Inquiry.create({
       property: propertyId,
-      buyer: req.user.id,
-      seller: property.owner,
-      message
+      buyer: buyerId,
+      seller: sellerId,
+      message:message.trim(),
+      status: 'pending'
     });
 
-    res.status(201).json({ message: "Inquiry sent", inquiry });
+    //populate the inquiry before sending response
+    await inquiry.populate([
+      { path: 'buyer', select: 'name email' },
+      { path: 'property', select: 'title location price images owner' },
+      {path: 'seller', select: 'name email' }
+    ]);
+
+    res.status(201).json({ message: "Inquiry sent successfully", inquiry });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: "Failed to create inquiry",
+      error: error.message });
   }
 };
 
@@ -38,10 +62,11 @@ const respondToInquiry = async (req, res) => {
       });
     }
     const inquiry = await Inquiry.findById(req.params.id)
-    .populate('property', 'name email');
-    if (!inquiry) {
+    .populate('property', 'title name location price images owner')
+    .populate('seller', 'name email');
 
-      return res.status(404).json({ 
+    if (!inquiry) {
+  return res.status(404).json({ 
         success: false,
         message: "Inquiry not found" 
       });
@@ -49,32 +74,47 @@ const respondToInquiry = async (req, res) => {
     }
     
     // ✅ Check if user is the property owner (seller)
+    const userId = req.user._id || req.user.id;
     const propertyOwnerId = inquiry.property.owner._id 
       ? inquiry.property.owner._id.toString() 
       : inquiry.property.owner.toString();
     
-    if (propertyOwnerId !== req.user.id) {
+    if (propertyOwnerId !== userId.toString()) {
       return res.status(403).json({ 
         success: false,
         message: "Not authorized to respond to this inquiry" 
       });
     }
 
+    // Check if already responded
+    if (inquiry.status === 'responded') {
+      return res.status(400).json({
+        success: false,
+        message: "You have already responded to this inquiry"
+      });
+    }
+
 
         // ✅ Update with correct field name
-    inquiry.response = reply;  // Changed from 'reply' to 'response'
-    inquiry.status = "responded";  // Changed from 'replied' to 'responded'
+    inquiry.response = reply.trim();
+    inquiry.status = "responded";  
     inquiry.respondedAt = new Date();
     await inquiry.save();
     
+    // Re-populate after save
+    await inquiry.populate([
+      { path: 'property', select: 'title name location price images' },
+      { path: 'buyer', select: 'name email' }
+    ]);
+
     res.status(200).json({
       success: true,
-      message: "Response sent successfully"
-      // error:error.message,
-      // inquiry,
+      message: "Response sent successfully",
+      inquiry
     });
 
   } catch (error) {
+    console.error('Respond to inquiry error:', error);
     res.status(500).json({
       success: false,
       message: "Failed to respond to inquiry",
@@ -99,23 +139,30 @@ getSingleInquiry = async (req, res) => {
     }
     
     // ✅ Check authorization - only seller or admin can view
+    const userId = req.user._id || req.user.id;
     const propertyOwnerId = inquiry.property.owner._id 
       ? inquiry.property.owner._id.toString() 
       : inquiry.property.owner.toString();
     
-    if (propertyOwnerId !== req.user.id && req.user.role !== 'admin') {
+
+      // Check authorization - seller, buyer, or admin can view
+    const isSeller = propertyOwnerId === userId.toString();
+    const isBuyer = inquiry.buyer._id.toString() === userId.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isSeller && !isBuyer && !isAdmin) {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to view this inquiry',
       });
     }
-
     res.status(200).json({
       success: true,
       inquiry,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error('Get single inquiry error:', error);
+    res.status(500).json({  
       success: false,
       message: 'Failed to fetch inquiry',
       error:error.message
@@ -127,6 +174,8 @@ getSingleInquiry = async (req, res) => {
 const getSellerInquiries = async (req, res) => {
   try {
     // Find all properties owned by this seller
+    const userId = req.user._id || req.user.id;
+
     const sellerProperties = await House.find({ owner: req.user.id }).select('_id');
     const propertyIds = sellerProperties.map(p => p._id);
     
@@ -149,6 +198,28 @@ const getSellerInquiries = async (req, res) => {
   }
 };
 
+
+const getBuyerInquiries = async (req,res) =>{
+  try{
+    const buyerId = req.user._id;
+    const inquiries = await Inquiry.find({ buyer: buyerId })
+      .populate('property', 'title images location price owner')
+      .populate('seller', 'name email')
+      .sort({ createdAt: -1 });
+    res.status(200).json({ 
+      success: true,
+      count: inquiries.length,
+      inquiries 
+    });
+  } catch (error) {
+    console.error('Error fetching buyer inquiries:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch inquiries' ,
+      error: error.message
+    });
+  }
+}
 
 // Get inquiries SENT TO the logged-in seller
 // const getSellerInquiries = async (req, res) => {
@@ -175,7 +246,7 @@ const getAllInquiries = async (req, res) => {
     
     res.status(200).json({ 
       success: true,
-      inquiries 
+      count: inquiries.length,
     });
   } catch (error) {
     console.error('Error fetching all inquiries:', error);
@@ -187,4 +258,4 @@ const getAllInquiries = async (req, res) => {
   }
 };
 
-module.exports ={createInquiry,respondToInquiry, getSingleInquiry, getSellerInquiries,getAllInquiries}
+module.exports ={createInquiry,respondToInquiry, getSingleInquiry, getSellerInquiries,getBuyerInquiries,getAllInquiries}

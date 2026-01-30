@@ -15,7 +15,7 @@ export default function BuyerEnquiries() {
   const fetchInquiries = async () => {
     try {
       const res = await getBuyerInquiries();
-      setInquiries(res.data.inquiries || []);
+      setInquiries(res.data.data || []);
     } catch (error) {
       toast.error('Failed to load inquiries');
       console.error(error);

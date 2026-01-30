@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getInquiryById, respondToInquiry } from '../../Utils/property';
 import { toast } from 'react-hot-toast';
+import { ArrowLeft } from 'lucide-react';
 
 export default function RespondToInquiry() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ export default function RespondToInquiry() {
   const fetchInquiry = async () => {
     try {
       const res = await getInquiryById(id);
+      console.log('Fetched inquiry:', res.data); 
       setInquiry(res.data.inquiry);
 
       if (res.data.inquiry.status !== 'pending') {
@@ -28,6 +30,7 @@ export default function RespondToInquiry() {
     } catch (error) {
       console.error('Fetch error:', error);
       toast.error(error.response?.data?.message || 'Failed to load inquiry');
+      console.error('Error response:', error.response?.data);
       navigate('/sellerinquiries');
     } finally {
       setLoading(false);
@@ -44,13 +47,23 @@ export default function RespondToInquiry() {
 
     try {
       setSending(true);
-      await respondToInquiry(id, reply);
+      console.log('Sending reply:', { id, reply });
+
+
+      const res = await respondToInquiry(id, reply);
+      console.log('Response:', res.data);
+
+      setInquiry(res.data.inquiry || inquiry);
       toast.success('Reply sent successfully');
-      navigate('/sellerinquiries');
-    } catch (err) {
-      console.error('Response error:', err);
+
+      setTimeout(() => {
+        navigate('/sellerinquiries');
+      }, 2000);
+
+    } catch (error) {
+      console.error('Response error:', error);
       toast.error(
-        err.response?.data?.message || 'Failed to send reply'
+        error.response?.data?.message || 'Failed to send reply'
       );
     } finally {
       setSending(false);
@@ -68,15 +81,31 @@ export default function RespondToInquiry() {
     );
   }
 
-  if (!inquiry) return null;
+  
+  if (!inquiry) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Inquiry not found</p>
+          <button
+            onClick={() => navigate('/sellerinquiries')}
+            className="text-blue-600 hover:underline"
+          >
+            Back to Inquiries
+          </button>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/sellerinquiries')}
         className="text-blue-600 hover:underline mb-4 flex items-center gap-2"
       >
-        <span>←</span> Back
+        <ArrowLeft className="w-4 h-4" /> Back to Inquiries
       </button>
 
       <div className="bg-white rounded-lg shadow-lg p-6">
@@ -106,6 +135,15 @@ export default function RespondToInquiry() {
             </span>
           </div>
           <p className="text-gray-700">{inquiry.message}</p>
+        </div>
+        {/* Buyer Contact Info */}
+          {inquiry.buyer?.email && (
+            <div className="mt-3 pt-3 border-t border-blue-200">
+              <p className="text-xs text-gray-600">
+                Buyer Email: <a href={`mailto:${inquiry.buyer.email}`} className="text-blue-600 underline">{inquiry.buyer.email}</a>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Reply Form */}
@@ -144,6 +182,6 @@ export default function RespondToInquiry() {
           </div>
         </form>
       </div>
-    </div>
+    
   );
 }

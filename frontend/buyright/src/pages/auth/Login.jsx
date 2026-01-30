@@ -73,7 +73,7 @@ export default function Login() {
               className="bg-white rounded-xl shadow-lg p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 border-transparent hover:border-green-500"
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-green-200 rounded-full flex items-center justify-center">
                   <Store className="w-10 h-10 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">Login as Seller</h2>
@@ -107,13 +107,13 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-zinc-100 p-4">
       <form 
         onSubmit={handleSubmit} 
-        className="w-full max-w-md bg-blue-200 p-6 rounded-lg shadow-md space-y-5"
+        className="w-full max-w-md bg-green-200 p-6 rounded-lg shadow-md space-y-5"
       >
           <div className="text-center">
           <button
             type="button"
             onClick={() => setStep(1)}
-            className="text-sm text-blue-600 hover:underline mb-2"
+            className="text-sm text-green-800 hover:underline mb-2"
           >
             ← Change login type
           </button>

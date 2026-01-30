@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 import { getFavourites, getHouses } from '../../Utils/property'; // ✅ Fixed path
 import api from '../../lib/axios';
 import { toast } from 'react-hot-toast';
-import { HomeModernIcon } from '@heroicons/react/24/outline';
+import { EnvelopeIcon, HomeModernIcon } from '@heroicons/react/24/outline';
+import { HeartIcon } from '@heroicons/react/24/solid';
+import { InspectIcon } from 'lucide-react';
 
 export default function BuyerDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -50,8 +52,8 @@ export default function BuyerDashboard() {
   useEffect(() => {
     const fetchInquiries = async () => {
       try {
-        const res = await api.get('/inquiry/my-inquiries');
-        setRecentInquiries(res.data.inquiries || []);
+        const res = await getBuyerInquiries();
+        setRecentInquiries(res.data.data || []);
       } catch (error) {
         console.warn('Inquiry endpoint not implemented:', error);
       } finally {
@@ -82,14 +84,14 @@ export default function BuyerDashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Link
-          to="/allListing" // ✅ Correct route
+          to="/allListing" 
           className="bg-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center text-center border border-gray-200"
         >
           <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-            <HomeModernIcon className="w-6 h-6 text-blue-600" /> {/* ✅ Proper icon usage */}
+            <HomeModernIcon className="w-6 h-6 text-blue-600" /> 
           </div>
-          <h3 className="font-semibold">Browse Listings</h3>
-          <p className="text-sm text-gray-600 mt-1">Explore available properties</p>
+          <h3 className="font-semibold text-xl">Browse Listings</h3>
+          <p className="text-lg text-gray-600 mt-1">Explore available properties</p>
         </Link>
 
         <Link
@@ -97,18 +99,29 @@ export default function BuyerDashboard() {
           className="bg-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center text-center border border-gray-200"
         >
           <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-2">
-            <span className="text-yellow-600 text-xl">❤️</span>
+          <HeartIcon className="w-6 h-6 text-red-600" /> 
           </div>
           <h3 className="font-semibold">My Favorites</h3>
           <p className="text-sm text-gray-600 mt-1">View saved properties</p>
         </Link>
 
+         <Link
+                  to="/buyerenquiries"
+                  className="bg-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center text-center border border-gray-200"
+                >
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                    <EnvelopeIcon className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold">My Enquiries</h3>
+                  <p className="text-sm text-gray-600 mt-1">View your messages</p>
+                </Link>
+
         <Link
-          to="/allListing" // ✅ Correct route
+          to="/allListing" 
           className="bg-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center text-center border border-gray-200"
         >
           <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
-            <span className="text-green-600 text-xl">🔍</span>
+           <InspectIcon className="w-6 h-6 text-green-600" />
           </div>
           <h3 className="font-semibold">Book Inspection</h3>
           <p className="text-sm text-gray-600 mt-1">Schedule a property visit</p>

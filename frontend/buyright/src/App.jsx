@@ -7,7 +7,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AdminLogin from './pages/auth/AdminLogin';
 import Home from './pages/public/Home';
-import Listings from './pages/public/Listing';
+import Listings from './pages/public/Listings';
 import PropertyDetail from './pages/public/PropertyDetail';
 import BuyerDashboard from './pages/Buyer/Dashboard';
 import BuyerEnquiries from './pages/Buyer/BuyerEnquiries';

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getHouses } from '../../Utils/property';
-import { toast } from 'react-hot-toast';
 import PropertyCard from '../../components/ui/PropertyCard';
 
 export default function Listings() {

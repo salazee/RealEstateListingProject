@@ -1,4 +1,10 @@
-
+//controller/adminController.js
+const User =require("../model/auth");
+const bcrypt = require('bcrypt');
+const sendEmail = require('../service/nodemailer');
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const createAdmin =async (req, res) => {
     try {
@@ -11,7 +17,10 @@ const createAdmin =async (req, res) => {
           message: 'Please provide name, email, and password'
         });
       }
-  
+      // Check if requester is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: "Only admins can create other admins" });
+      }
       // Check if user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
@@ -22,7 +31,8 @@ const createAdmin =async (req, res) => {
       }
   
       // Hash password
-      const hashedPassword = await bcrypt.hash(password, 12);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
   
       // Create admin user
       const admin = await User.create({
@@ -30,8 +40,22 @@ const createAdmin =async (req, res) => {
         email,
         password: hashedPassword,
         role: 'admin',
-        isVerified: true // Admins are auto-verified
+        isVerified: true, // Admins are auto-verified
+        isActive
       });
+      await newAdmin.save();    
+
+      // Send welcome email to new admin  
+      await sendEmail.sendMail(
+        newAdmin.email,
+        "Admin Account Created",
+        `<h1>Welcome to the Admin Team, ${newAdmin.name}!</h1>
+        p>Your admin account has been created.</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Temporary Password:</strong> ${password}</p> 
+        <p><em>Please change your password after first login.</em></p>
+        <p>Login at: ${process.env.FRONTEND_URL}/admin/login</p>`
+      );  
   
       res.status(201).json({
         success: true,
@@ -46,62 +70,169 @@ const createAdmin =async (req, res) => {
   
     } catch (error) {
       console.error('Create admin error:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
-        message: 'Server error creating admin'
+        message: 'Server error creating admin',
+        error: error.message
       });
     }
+  };
+
+//get all Admins 
+const getAllAdmins = async (req, res) => {
+  try {
+    // Check if requester is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Access denied. Only admins can access this resource" });
+    }
+    const admins = await User.find({ role: 'admin' }).select('-password -otp -otpExpires  -resetPasswordToken -resetPasswordExpires')
+    .sort({ createdAt: -1 }); // Sort by creation date descending
+
+    return res.status(200).json({
+      success: true,
+      admins
+    }); 
+  } catch (error) {
+    console.error("Get all admins error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error fetching admins",
+      error: error.message
+    });
+  }
+
+};
+
+const deleteAdmin = async (req, res) => {
+  try {
+    const adminId = req.params.id;
+    // Check if requester is super admin
+    if (req.user.role !== 'superadmin') { 
+      return res.status(403).json({ message: "Only super admins can delete admins" });
+    }
+    if(req.user.id === adminId){
+      return res.status(400).json({ message: "You cannot delete yourself" });
+    }
+    const admin = await User.findByIdAndDelete(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    if (admin.role !== 'admin') {
+      return res.status(400).json({ message: "The specified user is not an admin" }); 
+    }
+    await User.findByIdAndDelete(adminId);
+
+    return res.status(200).json({
+      message: "Admin deleted successfully"
   });
-  
-  // ✅ ONE-TIME SETUP - Create First Admin (DISABLE AFTER FIRST USE)
-  router.post('/setup-first-admin', async (req, res) => {
+  } catch (error) { 
+    console.error("Delete admin error:", error);
+    return res.status(500).json({
+      message: "Server error deleting admin",
+      error: error.message
+    });
+  }
+};
+
+// ✅ Promote User to Admin (Super Admin Only)
+const promoteToAdmin = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Check if requester is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: "User is already an admin" });
+    }
+
+    // Promote to admin
+    user.role = 'admin';
+    user.isVerified = true; // Auto-verify admins
+    await user.save();
+
+    // Send notification email
+    await sendEmail.sendMail(
+      user.email,
+      "You've Been Promoted to Admin",
+      `<h1>Congratulations, ${user.name}!</h1>
+       <p>You have been promoted to Admin.</p>
+       <p>You can now access the admin dashboard at:</p>
+       <p>${process.env.FRONTEND_URL}/admin/login</p>`
+    );
+
+    return res.status(200).json({
+      message: "User promoted to admin successfully",
+      admin: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error("Error promoting user:", error);
+    return res.status(500).json({ 
+      message: "Failed to promote user", 
+      error: error.message 
+    });
+  } 
+};
+  // ✅ Demote Admin to User
+
+  const demoteAdmin = async (req, res) => {
     try {
-      // ✅ SECURITY: Check if any admin exists
-      const adminExists = await User.findOne({ role: 'admin' });
-      if (adminExists) {
-        return res.status(403).json({
-          success: false,
-          message: 'Admin already exists. Use /create-admin endpoint instead.'
-        });
+      const { adminId } = req.params;
+      const { newRole } = req.body; // 'buyer' or 'seller'
+  
+      // Check if requester is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: "Access denied" });
       }
   
-      const { name, email, password, secretKey } = req.body;
-  
-      // ✅ SECURITY: Require a secret key from environment
-      if (secretKey !== process.env.ADMIN_SETUP_KEY) {
-        return res.status(403).json({
-          success: false,
-          message: 'Invalid setup key'
-        });
+      // Prevent demoting yourself
+      if (req.user.id === adminId) {
+        return res.status(400).json({ message: "You cannot demote yourself" });
       }
   
-      if (!name || !email || !password) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please provide name, email, and password'
-        });
+      if (!['buyer', 'seller'].includes(newRole)) {
+        return res.status(400).json({ message: "New role must be 'buyer' or 'seller'" });
       }
   
-      const hashedPassword = await bcrypt.hash(password, 12);
+      const admin = await User.findById(adminId);
   
-      const admin = await User.create({
-        name,
-        email,
-        password: hashedPassword,
-        role: 'admin',
-        isVerified: true
-      });
+      if (!admin) {
+        return res.status(404).json({ message: "Admin not found" });
+      }
   
-      const token = jwt.sign(
-        { id: admin._id, role: admin.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+      if (admin.role !== 'admin') {
+        return res.status(400).json({ message: "User is not an admin" });
+      }
+  
+      // Demote to regular user
+      admin.role = newRole;
+      await admin.save();
+  
+      // Send notification email
+      await sendEmail.sendMail(
+        admin.email,
+        "Role Change Notification",
+        `<h2>Hello ${admin.name},</h2>
+         <p>Your role has been changed from Admin to ${newRole}.</p>
+         <p>You can now login at the regular user portal.</p>`
       );
   
-      res.status(201).json({
-        success: true,
-        message: 'First admin created successfully',
-        token,
+      return res.status(200).json({
+        message: "Admin demoted successfully",
         user: {
           id: admin._id,
           name: admin.name,
@@ -111,10 +242,18 @@ const createAdmin =async (req, res) => {
       });
   
     } catch (error) {
-      console.error('Setup admin error:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Server error setting up admin'
+      console.error("Error demoting admin:", error);
+      return res.status(500).json({ 
+        message: "Failed to demote admin", 
+        error: error.message 
       });
     }
-  });
+  ;
+
+module.exports = {
+    createAdmin,
+    getAllAdmins,
+    deleteAdmin,
+    promoteToAdmin,
+    demoteAdmin
+};

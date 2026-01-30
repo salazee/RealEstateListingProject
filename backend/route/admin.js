@@ -1,17 +1,18 @@
 // backend/routes/adminRoutes.js
 const express = require('express');
-const router = express.Router();
-const User = require('../model/auth');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const route = express.Router();
+const {createAdmin, getAllAdmins,deleteAdmin,promoteAdmin,demoteAdmin} = require('../controllers/adminController');,
 const { authMidware} = require('../middleware/authmiddleware');
 const {checkAccess} = require('../middleware/authorization');
 
-// ✅ SUPER ADMIN ONLY - Create New Admin
-// Should be protected by a super admin role or secret key
-router.post('/create-admin', authMidware, checkAccess,createAdmin);
+route.post('/createadmin',authMidware,checkAccess(['admin']),createAdmin);
 
-// ✅ Get All Admins (Admin Only)
-router.get('/all-admins', authMidware, checkAccess,getAdmin) ;
+route.get('/alladmins',authMidware,checkAccess(['admin']),getAllAdmins);
 
-module.exports = router;
+route.delete('/deleteadmin/:id',authMidware,checkAccess(['admin']),deleteAdmin);
+
+route.patch('/promoteadmin/:userId',authMidware,checkAccess(['admin']),promoteAdmin);
+
+route.put('/demoteadmin/:adminId',authMidware,checkAccess(['admin']),demoteAdmin);
+
+module.exports = route;

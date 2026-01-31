@@ -55,14 +55,14 @@ export default function Login() {
               className="bg-white rounded-xl shadow-lg p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2 border-transparent hover:border-blue-500"
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-zinc-200 rounded-full flex items-center justify-center">
                   <User className="w-10 h-10 text-blue-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">Login as Buyer</h2>
                 <p className="text-gray-600">
                   Access your account to browse and purchase properties
                 </p>
-                <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition mt-4">
+                <button className="w-full py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-700 transition mt-4">
                   Continue as Buyer
                 </button>
               </div>
@@ -107,13 +107,13 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-zinc-100 p-4">
       <form 
         onSubmit={handleSubmit} 
-        className="w-full max-w-md bg-green-200 p-6 rounded-lg shadow-md space-y-5"
+        className="w-full max-w-md bg-blue-200 p-6 rounded-lg shadow-md space-y-5"
       >
           <div className="text-center">
           <button
             type="button"
             onClick={() => setStep(1)}
-            className="text-sm text-green-800 hover:underline mb-2"
+            className="text-sm text-blue-800 hover:underline mb-2"
           >
             ← Change login type
           </button>
@@ -123,7 +123,7 @@ export default function Login() {
           <div className="mt-2 inline-block">
             <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
               selectedRole === 'buyer' 
-                ? 'bg-blue-100 text-blue-700' 
+                ? 'bg-blue-200 text-blue-700' 
                 : 'bg-green-100 text-green-700'
             }`}>
               {selectedRole === 'buyer' ? 'Buyer' : 'Seller'}
@@ -176,7 +176,7 @@ export default function Login() {
           className={`w-full py-3 rounded-lg text-white font-semibold transition ${
             selectedRole === 'buyer'
               ? 'bg-blue-600 hover:bg-blue-700'
-              : 'bg-green-600 hover:bg-green-700'
+              : 'bg-slate-600 hover:bg-slate-900'
           }`}
         >
           Login

@@ -1,8 +1,8 @@
 // src/pages/seller/EditListing.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getHouse, editHouse } from '../../utils/Property';
-import { uploadToCloudinary } from '../../utils/cloudinary';
+import { getHouse, editHouse } from '@/utils/Property';
+import { uploadToCloudinary } from '@/utils/cloudinary';
 import { toast } from 'react-hot-toast';
 
 export default function EditListing() {

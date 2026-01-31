@@ -3,8 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getHouses } from "../../utils/Property";
-import PropertyCard from "../../components/ui/PropertyCard";
+import { getHouses } from "@/utils/Property";
+import PropertyCard from "@/components/ui/PropertyCard";
 
 export default function Home() {
   const [houses, setHouses] = useState([]);

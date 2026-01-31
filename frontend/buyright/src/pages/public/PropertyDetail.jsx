@@ -2,7 +2,7 @@
 // src/pages/public/PropertyDetail.jsx
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getHouse, addFavourite, removeFavourite, createInquiry, payInspectionFee, initializePayment } from '../../utils/Property';
+import { getHouse, addFavourite, removeFavourite, createInquiry, payInspectionFee, initializePayment } from '@/utils/Property';
 import {
   HeartIcon,
   MapPinIcon,
@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
-import MortgageCalculator from '../../components/MortgageCalculator';
+import MortgageCalculator from '@/components/MortgageCalculator';
 
 export default function PropertyDetail() {
   const { id } = useParams();

@@ -1,8 +1,8 @@
 
 // src/pages/public/Listings.jsx
 import { useEffect, useState } from 'react';
-import { getHouses } from '../../utils/Property';
-import PropertyCard from '../../components/ui/PropertyCard';
+import { getHouses } from '@/utils/Property';
+import PropertyCard from '@/components/ui/PropertyCard';
 
 export default function Listings() {
   const [houses, setHouses] = useState([]);

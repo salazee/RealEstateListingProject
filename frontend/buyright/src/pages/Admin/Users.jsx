@@ -101,7 +101,7 @@
 // src/pages/admin/User.jsx
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { getAllUsers, deleteUser, updateUser } from '../../utils/admin';
+import { getAllUsers, deleteUser, updateUser } from '@/utils/admin';
 import { toast } from 'react-hot-toast';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 

@@ -1,7 +1,7 @@
 // src/pages/seller/BoostListing.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getHouse, boostListing, initializePayment } from '../../utils/Property';
+import { getHouse, boostListing, initializePayment } from '@/utils/Property';
 import { toast } from 'react-hot-toast';
 
 export default function BoostListing() {

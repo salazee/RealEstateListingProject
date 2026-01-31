@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams,useNavigate } from 'react-router-dom';
-import api from '../../lib/axios';
+import api from '@/lib/axios';
 import { toast } from 'react-hot-toast';
 
 export default function ResetPassword() {

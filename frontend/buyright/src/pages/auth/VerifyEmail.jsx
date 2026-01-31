@@ -2,7 +2,7 @@
 // src/pages/auth/VerifyEmail.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { verifyEmail, resendOtp } from '../../Utils/auth';
+import { verifyEmail, resendOtp } from '../../utils/auth';
 import { toast } from 'react-hot-toast';
 
 export default function VerifyEmail() {

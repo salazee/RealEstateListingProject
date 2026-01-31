@@ -4,7 +4,7 @@ import {
   getPendingListings,
   approveListing,
   rejectListing
-} from '../../Utils/admin';
+} from '../../utils/admin';
 import { toast } from 'react-hot-toast';
 
 export default function PendingListings() {

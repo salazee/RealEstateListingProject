@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getOptimizedImage } from '../../Utils/image';
-import { getMyListing, deleteHouse,payListingFee,boostListing,initializePayment} from '../../Utils/property';
+import { getOptimizedImage } from '../../utils/image';
+import { getMyListing, deleteHouse,payListingFee,boostListing,initializePayment} from '../../utils/Property';
 import { toast } from 'react-hot-toast';
 
 export default function MyListings() {

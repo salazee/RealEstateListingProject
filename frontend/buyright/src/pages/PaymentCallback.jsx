@@ -1,7 +1,7 @@
 // src/pages/PaymentCallback.jsx
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {verifyPayment} from '../Utils/Property'; 
+import {verifyPayment} from '../utils/Property'; 
 import api from '../lib/axios';
 import { toast } from 'react-hot-toast';
 

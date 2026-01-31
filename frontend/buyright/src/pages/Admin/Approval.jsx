@@ -1,6 +1,6 @@
 // src/pages/admin/Approvals.jsx
 import { useState, useEffect } from 'react';
-import { getPendingListings, approveListing, rejectListing } from '../../Utils/admin';
+import { getPendingListings, approveListing, rejectListing } from '../../utils/admin';
 import { toast } from 'react-hot-toast';
 
 export default function AdminApprovals() {

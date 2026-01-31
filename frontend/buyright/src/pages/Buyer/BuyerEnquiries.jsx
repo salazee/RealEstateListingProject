@@ -1,6 +1,6 @@
 // src/pages/Buyer/BuyerEnquiries.jsx
 import { useEffect, useState } from 'react';
-import { getBuyerInquiries } from '../../Utils/property';
+import { getBuyerInquiries } from '../../utils/Property';
 import { toast } from 'react-hot-toast';
 
 export default function BuyerEnquiries() {

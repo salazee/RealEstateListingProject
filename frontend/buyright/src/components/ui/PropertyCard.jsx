@@ -1,6 +1,6 @@
 // src/components/ui/PropertyCard.jsx
 import { useEffect, useState } from 'react';
-import { getOptimizedImage } from '../../Utils/image';
+import { getOptimizedImage } from '../../utils/image';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   HeartIcon as HeartSolid,
@@ -10,7 +10,7 @@ import {
   Square3Stack3DIcon
 } from '@heroicons/react/24/solid';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
-import { addFavourite, removeFavourite, getFavourites, createInquiry } from '../../Utils/property';
+import { addFavourite, removeFavourite, getFavourites, createInquiry } from '../../utils/Property';
 import { toast } from 'react-hot-toast';
 
 export default function PropertyCard({ house, showFavorite = true, showInquiry = true }) {

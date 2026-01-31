@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../Utils/auth';
+import { registerUser } from '../../utils/auth';
 import { toast } from 'react-hot-toast';
 import { User, Store } from 'lucide-react';
 

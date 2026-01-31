@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getHouses } from "../../Utils/Property";
+import { getHouses } from "../../utils/Property";
 import PropertyCard from "../../components/ui/PropertyCard";
 
 export default function Home() {

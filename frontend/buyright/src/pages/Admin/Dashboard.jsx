@@ -237,7 +237,7 @@
 // src/pages/admin/AdminDashboard.jsx
 import { useState, useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { getDashboardStats } from '../../Utils/admin';
+import { getDashboardStats } from '../../utils/admin';
 import { toast } from 'react-hot-toast';
 import { 
   UsersIcon, 

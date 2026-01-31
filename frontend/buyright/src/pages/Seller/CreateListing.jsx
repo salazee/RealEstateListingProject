@@ -1,7 +1,7 @@
 // src/pages/seller/CreateListing.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createListing } from '../../utils/property';
+import { createListing } from '../../utils/Property';
 import { uploadToCloudinary } from '../../utils/cloudinary';
 import { toast } from 'react-hot-toast';
 

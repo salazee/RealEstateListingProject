@@ -2,7 +2,7 @@
 // src/pages/buyer/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getFavourites, getHouses } from '../../Utils/property'; // ✅ Fixed path
+import { getFavourites, getHouses } from '../../utils/Property'; // ✅ Fixed path
 import api from '../../lib/axios';
 import { toast } from 'react-hot-toast';
 import { EnvelopeIcon, HomeModernIcon } from '@heroicons/react/24/outline';

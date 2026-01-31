@@ -2,7 +2,7 @@
 // src/pages/public/PropertyDetail.jsx
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getHouse, addFavourite, removeFavourite, createInquiry, payInspectionFee, initializePayment } from '../../Utils/property';
+import { getHouse, addFavourite, removeFavourite, createInquiry, payInspectionFee, initializePayment } from '../../utils/Property';
 import {
   HeartIcon,
   MapPinIcon,

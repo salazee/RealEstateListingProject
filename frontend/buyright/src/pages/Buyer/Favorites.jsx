@@ -1,7 +1,7 @@
 // src/pages/buyer/Favorites.jsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getFavourites, removeFavourite } from '../../utils/property';
+import { getFavourites, removeFavourite } from '../../utils/Property';
 import PropertyCard from '../../components/ui/PropertyCard';
 import { toast } from 'react-hot-toast';
 

@@ -1,7 +1,7 @@
 // src/pages/Seller/SellerInquiries.jsx
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSellerInquiries } from '../../Utils/property';
+import { getSellerInquiries } from '../../utils/Property';
 import { toast } from 'react-hot-toast';
 
 export default function SellerInquiries() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getInquiryById, respondToInquiry } from '../../Utils/property';
+import { getInquiryById, respondToInquiry } from '../../utils/Property';
 import { toast } from 'react-hot-toast';
 import { ArrowLeft } from 'lucide-react';
 

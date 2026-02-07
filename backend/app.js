@@ -20,7 +20,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use(cors())
+app.use(cors(['https://realestatelistingfrontend.onrender.com','http://localhost:5173'],{
+  origin: 'https://realestatelistingfrontend.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.use(helmet());
 app.use('/property', houseRoute);

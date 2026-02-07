@@ -89,7 +89,7 @@ const VerifyEmail = async (req, res) => {
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ message: "User already verified" });
+      return res.status(400).json({ message: "Email already verified" });
     }
 
     if (user.otp !== otp) {
@@ -132,7 +132,7 @@ const ResendOtp = async (req, res) => {
     }
 
     const generateOtp = () =>
-      Math.floor(10000 + Math.random() * 90000).toString();
+      Math.floor(100000 + Math.random() * 900000).toString();
 
     const otp = generateOtp();
     user.otp = otp;
@@ -143,7 +143,10 @@ const ResendOtp = async (req, res) => {
     await sendEmail.sendMail(
       user.email,
       "New Verification OTP",
-      `<h2>Your new OTP: <strong>${otp}</strong></h2>`
+      `<h2>Your new OTP: <strong>${otp}</strong></h2>
+      <p>Please use this code to verify your email. It expires in 10 minutes.</p>
+      <p><em>Do not share this OTP with anyone.</em></p>
+      `
     );
 
     return res.status(200).json({ message: "OTP resent successfully" });
@@ -229,7 +232,7 @@ const Login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User does not exist" });
     }
 
     if (!user.isVerified) {
@@ -267,7 +270,7 @@ const Login = async (req, res) => {
 const Logout = async (req, res) => {
   try {
     return res.status(200).json({
-      message: "Logged out successfully. Please delete token on client."
+      message: "Logged out successfully"
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

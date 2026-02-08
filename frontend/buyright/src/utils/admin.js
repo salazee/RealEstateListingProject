@@ -1,31 +1,31 @@
 
-import api from '../lib/axios';
+import API_URL from '../lib/axios';
 
 // === USER MANAGEMENT ===
-export const getAllUsers = () => api.get('/api/getalluser');
-export const deleteUser = (id) => api.delete('/api/deleteuser', { data: { id } });
-export const updateUser = (id, role) => api.put(`/api/updateuser/${id}`, { role }); // ✅ FIXED: Missing parentheses
+export const getAllUsers = () => API_URL.get('/API_URL/getalluser');
+export const deleteUser = (id) => API_URL.delete('/API_URL/deleteuser', { data: { id } });
+export const updateUser = (id, role) => API_URL.put(`/API_URL/updateuser/${id}`, { role }); // ✅ FIXED: Missing parentheses
 
 // === LISTING MANAGEMENT ===
-export const getPendingListings = () => api.get('/property/pending');
-export const approveListing = (id) => api.put(`/property/approveListing/${id}`); // ✅ FIXED: Missing parentheses
-export const rejectListing = (id) => api.delete('/property/rejectListing', { data: { id } });
+export const getPendingListings = () => API_URL.get('/property/pending');
+export const approveListing = (id) => API_URL.put(`/property/approveListing/${id}`); // ✅ FIXED: Missing parentheses
+export const rejectListing = (id) => API_URL.delete('/property/rejectListing', { data: { id } });
 
 
 // === INQUIRIES ===
-export const getAllInquiries = () => api.get('/inquiry/allinquiries');
+export const getAllInquiries = () => API_URL.get('/inquiry/allinquiries');
 
 // === ANALYTICS & PAYMENTS ===
-export const getRevenueAnalytics = () => api.get('/payment/analytics');
-export const getAllPayments = (params) => api.get('/payment/allpayment', { params });
+export const getRevenueAnalytics = () => API_URL.get('/payment/analytics');
+export const getAllPayments = (params) => API_URL.get('/payment/allpayment', { params });
 // === ANALYTICS ===
 // This calls the backend analytics endpoint (recommended)
-export const getAnalytics = () => api.get('/dashboard/analytics'); // ✅ FIXED: Use existing endpoint
-export const ManageAdmins = () => api.get('/admin/alladmins');
-export const CreateAdmin = (data) => api.post('/admin/createadmin', data);
-export const DeleteAdmin = (id) => api.delete(`/admin/deleteadmin/${id}`);  
-export const PromoteAdmin = (id) => api.put(`/admin/promotetoadmin/${id}`);
-export const DemoteAdmin = (id) => api.put(`/admin/demoteadmin/${id}`);
+export const getAnalytics = () => API_URL.get('/dashboard/analytics'); // ✅ FIXED: Use existing endpoint
+export const ManageAdmins = () => API_URL.get('/admin/alladmins');
+export const CreateAdmin = (data) => API_URL.post('/admin/createadmin', data);
+export const DeleteAdmin = (id) => API_URL.delete(`/admin/deleteadmin/${id}`);  
+export const PromoteAdmin = (id) => API_URL.put(`/admin/promotetoadmin/${id}`);
+export const DemoteAdmin = (id) => API_URL.put(`/admin/demoteadmin/${id}`);
 
 
 
@@ -64,7 +64,7 @@ export const getDashboardStats = async () => {
 //   try {
 //     const [usersRes, housesRes, pendingRes] = await Promise.all([
 //       getAllUsers(),
-//       api.get('/property/getHouses'),
+//       API_URL.get('/property/getHouses'),
 //       getPendingListings()
 //     ]);
 

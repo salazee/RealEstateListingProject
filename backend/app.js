@@ -28,6 +28,7 @@ app.use(cors(['https://realestatelistingfrontend.onrender.com','http://localhost
 }));
 
 app.use(helmet());
+
 app.use('/property', houseRoute);
  app.use('/auth',authRoute);
  app.use('/api', userRoute)

@@ -44,7 +44,13 @@ app.use('/property', houseRoute);
     res.status(500).json({ message: err.message || 'Server error' });
   });
   
- 
+ app.get('/api/health', async (req, res) => {
+    try{
+      res.status(200).json({ message: 'Server is up and running',  });
+    } catch (error) {
+      res.status(500).json({ message: "Server is down" , error:error.message });
+    }
+    })
 // app.use('/user', userRoute)
 connectDB();
 app.listen(PORT, ()=>{

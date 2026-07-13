@@ -54,9 +54,9 @@ const Register = async(req,res) =>{
            
     // Send OTP email
     await sendEmail.sendMail(
-      newUser.email,
+      `newUser.email,
       "Verify Your Email - OTP",
-      `<h1><b>Welcome to Our Platform, ${newUser.name}!</b></h1>
+      <h1><b>Welcome to Our Platform, ${newUser.name}!</b></h1>
        <p>Thank you for registering!</p>
        <h2>Your OTP: <strong>${otp}</strong></h2>
        <p>Enter this code on the verification page to activate your account.</p>
@@ -67,6 +67,11 @@ const Register = async(req,res) =>{
       email:newUser.email, role:newUser.role} });
     } catch (error) {
         console.error("Error Creating User:", error);
+
+        // Handle duplicate key error (if unique index exists)
+        if (error.code === 11000) {
+          return res.status(400).json({ message: 'Email already registered' });
+        }
          res.status(500).send({
             message: "Internal Server Error",
             error: error.message
@@ -85,7 +90,7 @@ const VerifyEmail = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "If email exist, you will get an email shortly" });
     }
 
     if (user.isVerified) {
@@ -165,7 +170,8 @@ const forgotPassword = async (req, res) => {
     return res.status(400).json({ message: "Email is required" });
   }
   const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ message: 'User not found' });
+  if (!user){ return res.status(404).json({ message: 'User not found' })
+  };
 
   const resetToken = crypto.randomBytes(32).toString('hex');
 

@@ -39,10 +39,7 @@ app.use('/property', houseRoute);
  app.use('/dashboard', dashboardRoute);
  app.use('/inquiry',inquiryRoute);
  app.use('/payment',paymentRoute)
- app.use((err, req, res, next) => {
-    console.error('GLOBAL ERROR:', err);
-    res.status(500).json({ message: err.message || 'Server error' });
-  });
+
   
  app.get('/api/health', async (req, res) => {
     try{
@@ -57,4 +54,8 @@ app.listen(PORT, ()=>{
     console.log(`Server running at ${PORT} `)
 });
 
+app.use((err, req, res, next) => {
+  console.error('GLOBAL ERROR:', err);
+  res.status(500).json({ message: err.message || 'Server error' });
+});
 module.exports = app;
